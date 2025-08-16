@@ -7,6 +7,7 @@ from os.path import exists
 from io import BytesIO
 from bs4 import BeautifulSoup as bs
 
+scrpit_name = "gelget"
 images_saved = 0
 i = 0
 
@@ -68,6 +69,11 @@ signal.signal(signal.SIGINT, int_handler)
 
 if len(argv) < 2:
     print("Please give at least one tag to search for... baka")
+    print("to use the script do:")
+    print(f"{scrpit_name} tag1 tag2 tag3 ...")
+    print("")
+    print("files are saved with the following pattern by default:")
+    print("artist1_artist2__copyright1_copyright2__character1_character2")
     exit(1)
 
 url = "https://gelbooru.com/index.php?page=post&s=list&tags="
