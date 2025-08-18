@@ -75,8 +75,12 @@ def create_ideal_name(html):
     return filename
 
 def quit():
-    print(f"showed {i} images and downloaded {images_saved}.")
-    print(f"that means you owe sagu {images_saved} kisses")
+    global i
+    if i == 0:
+        print("no images found at all, nobody here but us chickens")
+    else:
+        print(f"showed {i} images and downloaded {images_saved}.")
+        print(f"that means you owe sagu {images_saved} kisses")
     exit(0)
 
 def int_handler(sig, frame):
@@ -110,30 +114,33 @@ while True:
     search_html = bs(search_page, "html.parser")
 
     try:
-        pic_page_url = search_html.find("article").find("a")["href"]
-        pic_page = urlopen(pic_page_url)
-        pic_page_html = bs(pic_page, "html.parser")
+        thumbnails = search_html.find("article").find_all("a")
     except:
         quit()
 
-    pic_url = pic_page_html.find(name="a", string="Original image")["href"]
+    for thumbnail in thumbnails:
+        pic_page_url = thumbnail["href"]
+        pic_page = urlopen(pic_page_url)
+        pic_page_html = bs(pic_page, "html.parser")
 
-    pic_data = urlopen(pic_url).read()
-    tmp_file = BytesIO(pic_data)
-    img = Image.open(tmp_file)
-    img.show()
+        pic_url = pic_page_html.find(name="a", string="Original image")["href"]
 
-    i += 1
+        pic_data = urlopen(pic_url).read()
+        tmp_file = BytesIO(pic_data)
+        img = Image.open(tmp_file)
+        img.show()
 
-    if input("do you want to save it? (Y/n) ") != "n":
-        # resolve filename
-        file_extension = pic_url[pic_url.rfind("."):]
-        filename = create_ideal_name(html=pic_page_html)
-        inp = input(f"should i save the image in {filename}{file_extension}? (Y/n) ")
-        if inp == "n":
-            print("FINE YOU BAKA give me a different name then, just without the extension")
-            filename = input()
-        try_save(img, filename, file_extension)
+        i += 1
 
-    tmp_file.close()
+        if input("do you want to save it? (Y/n) ") != "n":
+            # resolve filename
+            file_extension = pic_url[pic_url.rfind("."):]
+            filename = create_ideal_name(html=pic_page_html)
+            inp = input(f"should i save the image in {filename}{file_extension}? (Y/n) ")
+            if inp == "n":
+                print("FINE YOU BAKA give me a different name then, just without the extension")
+                filename = input()
+            try_save(img, filename, file_extension)
+
+        tmp_file.close()
 
