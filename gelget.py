@@ -11,20 +11,28 @@ from bs4 import BeautifulSoup as bs
 images_saved = 0
 i = 0
 
-yukkuri = """
+help_text = f"""
+Please give at least one tag to search for
+to use the script do:
+python {argv[0]} tag1 tag2 tag3 ...
+(just like the gelbooru search bar)
+
 　　 _,,....,,_　 ＿人人人人人人人人人人人人人人人＿
 -''":::::::::::::｀''＞　　　ゆっくりしていってね！！！　　　＜
 ヽ:::::::::::::::::::::￣^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^Ｙ^￣
-　|::::::;ノ´￣＼:::::::::::＼_,. -‐ｧ　　　　　＿_　　 _____　　 ＿_____
-　|::::ﾉ　　　ヽ､ヽr-r'"´　　（.__　　　　,´　_,, '-´￣￣｀-ゝ 、_ イ、
-_,.!イ_　　_,.ﾍｰｧ'二ﾊ二ヽ､へ,_7　　　'r ´　　　　　　　　　　ヽ、ﾝ、
-::::::rｰ''7ｺ-‐'"´　 　 ;　 ',　｀ヽ/｀7　,'＝=─-　　　 　 -─=＝',　i
+　|::::::;ノ´￣＼:::::::::::＼_,.      　　　＿_　　 _____　　 ＿_____
+　|::::ﾉ　　　ヽ､ヽr-r'"´　　（.__　　　  　,´　_,, '-´￣￣｀-ゝ 、_ イ、
+_,.!イ_　　_,.ﾍｰｧ'二ﾊ二ヽ､へ,_7　　　'r    ´　　　　　　　　　　ヽ、ﾝ、
+::::::rｰ''7ｺ-‐'"´　 　 ;　 ',　｀ヽ/｀7 　,'＝=─-　　　 　 -─=＝',　i
 r-'ｧ'"´/　 /!　ﾊ 　ハ　 !　　iヾ_ﾉ　i　ｲ　iゝ、ｲ人レ／_ルヽｲ i　|
-!イ´ ,' |　/__,.!/　V　､!__ﾊ　 ,'　,ゝ　ﾚﾘｲi (ﾋ_] 　　 　ﾋ_ﾝ ).| .|、i .||
-`! 　!/ﾚi'　(ﾋ_] 　　 　ﾋ_ﾝ ﾚ'i　ﾉ　　　!Y!""　 ,＿__, 　 "" 「 !ﾉ i　|
+!イ´ ,' |　/__,.!/　V　､!__ﾊ　 ,'　,ゝ  　ﾚﾘｲi (ﾋ_] 　　 　ﾋ_ﾝ ).| .|、i .||
+`! 　!/ﾚi'　(ﾋ_] 　　 　ﾋ_ﾝ ﾚ'i　ﾉ　　    　!Y!""　 ,＿__, 　 "" 「 !ﾉ i　|
 ,'　 ﾉ 　 !'"　 　 ,＿__,　 "' i .ﾚ'　　　　L.',.　 　ヽ _ﾝ　　　　L」 ﾉ| .|
-　（　　,ﾊ　　　　ヽ _ﾝ　 　人! 　　　　 | ||ヽ、　　　　　　 ,ｲ| ||ｲ| /
-,.ﾍ,）､　　）＞,､ _____,　,.イ　 ハ　　　　レ ル｀ ー--─ ´ルﾚ　ﾚ´
+　（　　,ﾊ　　　　ヽ _ﾝ　 　人! 　　　　   | ||ヽ、　　　　　　 ,ｲ| ||ｲ| /
+,.ﾍ,）､　　）＞,､ _____,　,.イ　 ハ　　   　　レ ル｀ ー--─ ´ルﾚ　ﾚ´
+
+files are saved with the following pattern by default:
+artist1_artist2__copyright1_copyright2__character1_character2
 """
 
 def try_save(img, filename, file_extention):
@@ -42,7 +50,7 @@ def try_save(img, filename, file_extention):
         else:
             print("Give a different name for the file, then. Without the extension")
             new_name = input()
-            # we're recursive in this bitch
+            # flexing a recursive function where its not really needed
             try_save(img, new_name, file_extension)
             
     
@@ -80,7 +88,6 @@ def quit():
         print("no images found at all, nobody here but us chickens")
     else:
         print(f"showed {i} images and downloaded {images_saved}.")
-        print(f"that means you owe sagu {images_saved} kisses")
     exit(0)
 
 def int_handler(sig, frame):
@@ -88,15 +95,7 @@ def int_handler(sig, frame):
 signal.signal(signal.SIGINT, int_handler)
 
 if len(argv) < 2:
-    print("Please give at least one tag to search for... baka")
-    print("to use the script do:")
-    print(f"python {argv[0]} tag1 tag2 tag3 ...")
-    print("(just like the gelbooru search bar)")
-    print("")
-    print(yukkuri)
-    print("")
-    print("files are saved with the following pattern by default:")
-    print("artist1_artist2__copyright1_copyright2__character1_character2")
+    print(help_text)
     exit(1)
 
 url = "https://gelbooru.com/index.php?page=post&s=list&tags="
@@ -138,7 +137,7 @@ while True:
             filename = create_ideal_name(html=pic_page_html)
             inp = input(f"should i save the image in {filename}{file_extension}? (Y/n) ")
             if inp == "n":
-                print("FINE YOU BAKA give me a different name then, just without the extension")
+                print("give a different name then, without the extension")
                 filename = input()
             try_save(img, filename, file_extension)
 
