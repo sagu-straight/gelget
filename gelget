@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import signal
 from urllib.request import urlopen
 from urllib.request import urlretrieve
