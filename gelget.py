@@ -62,7 +62,6 @@ start_help_text = """
 options in uppercase letters are the default, just pressing enter is the same as choosing them
 close the image viewer before choosing to save or not
 ctrl + c to quit
-
 """
 
 def try_save(img, filename, file_extention):
@@ -117,15 +116,14 @@ def create_ideal_name(html, search_tags, url, string):
         if search_tags.index(tag) != len(search_tags) - 1:
             joined_search_tags += "_"
 
-
-    for i in range(1, len(search_tags)):
+    for i in range(1, len(search_tags)+1):
         string = string.replace(f"%s{i}", search_tags[i - 1])
         
-    string = string.replace("%s", joined_search_tags)
     string = string.replace("%c", characters)
     string = string.replace("%p", copyrights)
     string = string.replace("%a", artists)
     string = string.replace("%u", identifying_string)
+    string = string.replace("%s", joined_search_tags)
 
     return string
 
